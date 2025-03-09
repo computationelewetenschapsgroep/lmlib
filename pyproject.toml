@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "lmlib"
+version = "0.0.1"
+description = "Logistics Management Library for Maritime Industry"
+authors = [
+    {name = "computationelewetenschapsgroep", email = "aryant@computationelewetenschapsgroep.com"},
+]
+dependencies = [
+    "requests",
+    'importlib-metadata; python_version<"3.10"',
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
