@@ -15,7 +15,7 @@ dependencies = [
     'importlib-metadata; python_version<"3.10"',
     'nextroute',
     'nextmv',
-    'pydantic>=2.10'
+    'pydantic>=2.10',
     'pytest',
     'pytest-mock',
     'pytest-cov',
