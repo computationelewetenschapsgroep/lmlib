@@ -19,6 +19,8 @@ dependencies = [
     'pytest',
     'pytest-mock',
     'pytest-cov',
+    'azure-digitaltwins-core>=1.2',
+    'azure-identity>=1.19',
 ]
 classifiers = [
     "Programming Language :: Python :: 3.10",
