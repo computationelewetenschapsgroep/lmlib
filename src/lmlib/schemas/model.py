@@ -1,6 +1,6 @@
 from typing import List, Dict
 from enum import Enum
-from schemas.base_model import (
+from src.lmlib.schemas.base_model import (
     SpatialDefinition, 
     WorkflowSpecification, 
     Area, 
@@ -11,7 +11,6 @@ from schemas.base_model import (
     WorkflowSpecificationNode, 
     WorkSchedule
 )
-from src.lmlib.schemas.base_model import WorkSchedule
 # Enum for Vessel Type
 class VesselType(Enum):
     WINCHESTER = "winchester"
@@ -31,12 +30,12 @@ class VesselDeckPositionType(Enum):
 
 
 class MonopileStateTransition(WorkflowSpecification):
-    """A state transition of a monopile transport for offshore wind farm installation.""""
-    dt_id = "dtmi:digitaltwins:isa95:MonopileStateTransition;1"
+    """A state transition of a monopile transport for offshore wind farm installation."""
+    model_id = "dtmi:digitaltwins:isa95:MonopileStateTransition;1"
 
 class FabricationYard(SpatialDefinition, StorageZone):
     """A representation of fabrication yard where the monopiles are stored."""
-    dt_id = "dtmi:digitaltwins:isa95:FabricationYard;1"
+    model_id = "dtmi:digitaltwins:isa95:FabricationYard;1"
 
     def __init__(self, spatial_definition: SpatialDefinition, monopiles: List['Monopile']):
         # super().__init__(value=spatial_definition.value, 
@@ -49,16 +48,16 @@ class FabricationYard(SpatialDefinition, StorageZone):
 
 class Deck(PhysicalAsset):
     """A representation of deck of a vessel."""
-    dt_id = "dtmi:digitaltwins:isa95:Deck;1"
+    model_id = "dtmi:digitaltwins:isa95:Deck;1"
 
 
 class MonopileTransport(WorkflowSpecification):
     """A representation of a monopile transport for offshore wind farm installation."""
-    dt_id = "dtmi:digitaltwins:isa95:MonopileTransport;1"
+    model_id = "dtmi:digitaltwins:isa95:MonopileTransport;1"
 
 class DeckPosition(OperationalLocation):
     """A position on the deck of a vessel."""
-    dt_id = "dtmi:digitaltwins:isa95:DeckPosition;1"
+    model_id = "dtmi:digitaltwins:isa95:DeckPosition;1"
 
     def __init__(self, position_type: VesselDeckPositionType):
         self.position_type = position_type
@@ -66,7 +65,7 @@ class DeckPosition(OperationalLocation):
 
 class Port(Area, SpatialDefinition):
     """A representation of a port where vessels are docked."""
-    dt_id = "dtmi:digitaltwins:isa95:Port;1"
+    model_id = "dtmi:digitaltwins:isa95:Port;1"
 
     def __init__(self, spatial_definition: SpatialDefinition):
         # super().__init__(value=spatial_definition.value, 
@@ -79,7 +78,7 @@ class Port(Area, SpatialDefinition):
 
 class OffshoreWindFarm(Area, SpatialDefinition):
     """A representation for offshore wind farm installation."""
-    dt_id = "dtmi:digitaltwins:isa95:OffshoreWindFarm;1"
+    model_id = "dtmi:digitaltwins:isa95:OffshoreWindFarm;1"
 
     def __init__(self, spatial_definition: SpatialDefinition, monopiles: List['Monopile']):
         # super().__init__(value=spatial_definition.value, 
@@ -93,7 +92,7 @@ class OffshoreWindFarm(Area, SpatialDefinition):
 
 class Monopile(Equipment):
     """A representation of a monopile for offshore wind farm installation"""
-    dt_id = "dtmi:digitaltwins:isa95:Monopile;1"
+    model_id = "dtmi:digitaltwins:isa95:Monopile;1"
 
     def __init__(self, 
                  name: str, 
@@ -145,7 +144,7 @@ class Monopile(Equipment):
 
 class MonopileTransportSchedule(WorkSchedule):
     """A representation of monopile transport schedule for offshore wind farm installation."""
-    dt_id = "dtmi:digitaltwins:isa95:MonopileTransportSchedule;1"
+    model_id = "dtmi:digitaltwins:isa95:MonopileTransportSchedule;1"
 
     def __init__(self, monopile: Monopile, work_type: str, start_time: str, end_time: str, schedule_state: str):
         self.monopile = monopile
@@ -157,7 +156,7 @@ class MonopileTransportSchedule(WorkSchedule):
 
 class Vessel(Equipment):
     """A representation for vessel."""
-    dt_id = "dtmi:digitaltwins:isa95:Vessel;1"
+    model_id = "dtmi:digitaltwins:isa95:Vessel;1"
 
     def __init__(self, vessel_type: VesselType, day_rate: float, responsibility: str, port: Port, fabrication_yard: FabricationYard, wind_farm: OffshoreWindFarm):
         self.vessel_type = vessel_type
@@ -170,7 +169,7 @@ class Vessel(Equipment):
 
 class MonopileState(WorkflowSpecificationNode):
     """A state of a monopile transport for offshore wind farm installation."""
-    dt_id = "dtmi:digitaltwins:isa95:MonopileState;1"
+    model_id = "dtmi:digitaltwins:isa95:MonopileState;1"
 
     def __init__(self, vessel: Vessel, fabrication_yard: FabricationYard, monopile_transport_schedule: MonopileTransportSchedule):
         self.vessel = vessel
