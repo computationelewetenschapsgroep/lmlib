@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 from azure.identity import DefaultAzureCredential
-from azure_digital_twin.adt_client import AzureDigitalTwinClient
+from lmlib.azure_digital_twin.adt_client import AzureDigitalTwinClient
 
 
 class AzureDigitalTwinsService:

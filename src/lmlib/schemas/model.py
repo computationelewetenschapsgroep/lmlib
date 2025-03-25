@@ -29,6 +29,13 @@ class VesselDeckPositionType(Enum):
     IN_STARBOARD = "InStarboard"
     OUT_STARBOARD = "OutStarboard"
 
+class VesselResponsibility(Enum):
+    MONOPILE_TRANSPORT = "MonopileTransport"
+    CRANE_TRANSPORT = "CraneTransport"
+    HOOKUP = "Hookup"
+    TOWING = "Towing"
+    TENSIONING = "Tensioning"
+    MOORING = "Mooring"
 
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
@@ -104,11 +111,11 @@ class Vessel(Equipment):
     model_id: str = Field("dtmi:digitaltwins:isa95:Vessel;1", const=True)
     vessel_type: VesselType
     day_rate: float
-    responsibility: str
+    responsibility: VesselResponsibility
     spatial_definition: SpatialDefinition
-    port: Port
-    fabrication_yard: FabricationYard
-    wind_farm: OffshoreWindFarm
+    port: Port = None
+    fabrication_yard: FabricationYard = None
+    wind_farm: OffshoreWindFarm = None
 
 
 class MonopileState(WorkflowSpecificationNode):
