@@ -37,6 +37,14 @@ class VesselResponsibility(Enum):
     TENSIONING = "Tensioning"
     MOORING = "Mooring"
 
+class WorkTypeEnum(Enum):    
+    PRODUCTION = "production"
+    MAINTENANCE = "maintenance"
+    QUALITY = "quality"
+    INVENTORY = "inventory"
+    MIXED = "mixed"
+    TRANSPORT = "transport"
+
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
     model_id: str = Field("dtmi:digitaltwins:isa95:MonopileStateTransition;1", const=True)
@@ -76,6 +84,7 @@ class OffshoreWindFarm(Area, SpatialDefinition):
 class Monopile(Equipment):
     """A representation of a monopile for offshore wind farm installation"""
     model_id: str = Field("dtmi:digitaltwins:isa95:Monopile;1", const=True)
+    ID : str
     name: str
     document_number: str
     revision: int
@@ -100,7 +109,7 @@ class MonopileTransportSchedule(WorkSchedule):
     """A representation of monopile transport schedule for offshore wind farm installation."""
     model_id: str = Field("dtmi:digitaltwins:isa95:MonopileTransportSchedule;1", const=True)
     monopile: Monopile
-    work_type: str
+    work_type: WorkTypeEnum
     start_time: str
     end_time: str
     schedule_state: str
@@ -109,6 +118,7 @@ class MonopileTransportSchedule(WorkSchedule):
 class Vessel(Equipment):
     """A representation for vessel."""
     model_id: str = Field("dtmi:digitaltwins:isa95:Vessel;1", const=True)
+    ID : str
     vessel_type: VesselType
     day_rate: float
     responsibility: VesselResponsibility
