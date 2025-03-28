@@ -42,3 +42,9 @@ class WorkflowSpecificationNode(BaseModel):
 class WorkSchedule(BaseModel):
     """A representation of a Work Schedule."""
     model_id: str = Field("dtmi:digitaltwins:isa95:WorkSchedule;1", const=True)
+
+class EquipmentCapabilityProperty(BaseModel):
+    model_id: str = Field("dtmi:digitaltwins:isa95:EquipmentCapabilityProperty;1", const = True)
+
+class ParameterSpecification(BaseModel):
+    model_id: str = Field("dtmi:digitaltwins:isa95:ParameterSpecification;1", const = True)

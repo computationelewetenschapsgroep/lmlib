@@ -2,6 +2,8 @@ from typing import List, Dict
 from pydantic import Field
 from enum import Enum
 from src.lmlib.schemas.base_model import (
+    EquipmentCapabilityProperty,
+    ParameterSpecification,
     SpatialDefinition, 
     WorkflowSpecification, 
     Area, 
@@ -70,6 +72,10 @@ class DependencyTypeEnum(Enum):
     NO_EARLIER_AFTER_START = "noEarlierAfterStart"
     NO_LATER_AFTER_END = "noLaterAfterEnd"
     NO_EARLIER_AFTER_END = "noEarlierAfterEnd"
+
+class GrillageTypeEnum(Enum):
+    REV = "REV"
+    SRW = "SRW"
 
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
@@ -163,3 +169,10 @@ class MonopileState(WorkflowSpecificationNode):
     vessel: Vessel
     fabrication_yard: FabricationYard
     monopile_transport_schedule: MonopileTransportSchedule
+
+class GrillageType(EquipmentCapabilityProperty):
+    model_id: str = Field("dtmi:digitaltwins:isa95:GrillageType;1", const = True)
+    grillage_type:GrillageTypeEnum
+
+class GrillageCompatibility(ParameterSpecification):
+    model_id: str = Field("dtmi:digitaltwins:isa95:GrillageCompatibility;1", const = True)
