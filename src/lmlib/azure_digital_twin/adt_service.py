@@ -41,14 +41,11 @@ class AzureDigitalTwinsService:
             print(f"Error deleting model {model_id}: {e}")
             raise
 
-    def create_digital_twin(self, model_id: str, twin_data: dict):
+    def create_digital_twin(self, twin_id: str, twin_data: dict):
         """ Create a digital twin based on a model. """
-        digital_twin_id = 'digitalTwin-' + str(uuid.uuid4())
-        twin_data["$metadata"] = {"$model": model_id}
-        twin_data["$dtId"] = digital_twin_id
         
         try:
-            created_twin = self.client.upsert_digital_twin(digital_twin_id, twin_data)
+            created_twin = self.client.upsert_digital_twin(twin_id, twin_data)
             return created_twin
         except Exception as e:
             print(f"Error creating digital twin: {e}")
@@ -102,10 +99,17 @@ class AzureDigitalTwinsService:
     def create_relationship(self, source_id: str, relationship_id: str, relationship_data: dict):
         """ Create a relationship between digital twins. """
         try:
-            self.client.upsert_relationship(source_id, relationship_id, relationship_data)
-            print(f"Relationship {relationship_id} created successfully.")
+            return self.client.upsert_relationship(source_id, relationship_id, relationship_data)
         except Exception as e:
             print(f"Error creating relationship {relationship_id}: {e}")
+            raise
+
+    def delete_relationship(self, digital_twin_id : str,relationship_id:str):
+        """ Delete a relationship between digital twins. """
+        try:
+            return self.client.delete_relationship(digital_twin_id, relationship_id)
+        except Exception as e:
+            print(f"Error deleting relationship {relationship_id}: {e}")
             raise
 
     def list_relationships(self, digital_twin_id: str):

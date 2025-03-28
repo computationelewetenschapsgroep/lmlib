@@ -58,6 +58,7 @@ class FabricationYard(SpatialDefinition, StorageZone):
 class Deck(PhysicalAsset):
     """A representation of deck of a vessel."""
     model_id: str = Field("dtmi:digitaltwins:isa95:Deck;1", const=True)
+    spatial_definition: SpatialDefinition
 
 
 class MonopileTransport(WorkflowSpecification):
@@ -68,6 +69,7 @@ class DeckPosition(OperationalLocation):
     """A position on the deck of a vessel."""
     model_id: str = Field("dtmi:digitaltwins:isa95:DeckPosition;1", const=True)
     position_type: VesselDeckPositionType
+    spatial_definition: SpatialDefinition
 
 
 class Port(Area, SpatialDefinition):
