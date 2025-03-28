@@ -58,9 +58,23 @@ class WorkScheduleStateEnum(Enum):
     SUSPENDED = "suspended"
     CLOSED = "closed"
 
+
+class DependencyTypeEnum(Enum):
+    AT_START = "atStart"
+    AFTER_START = "afterStart"
+    AFTER_END = "afterEnd"
+    NOT_FOLLOW = "notFollow"
+    POSSIBLE_PARALLEL = "possibleParallel"
+    NOT_IN_PARALLEL = "notInParallel"
+    NO_LATER_AFTER_START = "noLaterAfterStart"
+    NO_EARLIER_AFTER_START = "noEarlierAfterStart"
+    NO_LATER_AFTER_END = "noLaterAfterEnd"
+    NO_EARLIER_AFTER_END = "noEarlierAfterEnd"
+
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
     model_id: str = Field("dtmi:digitaltwins:isa95:MonopileStateTransition;1", const=True)
+    dependency_type = DependencyTypeEnum
 
 class FabricationYard(SpatialDefinition, StorageZone):
     """A representation of fabrication yard where the monopiles are stored."""
