@@ -45,6 +45,19 @@ class WorkTypeEnum(Enum):
     MIXED = "mixed"
     TRANSPORT = "transport"
 
+class WorkScheduleStateEnum(Enum):
+    FORECAST = "forecast"
+    RELEASED = "released"
+    CANCELLED = "cancelled"
+    WAITING = "waiting"
+    READY = "ready"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    ABORTED = "aborted"
+    HELD = "held"
+    SUSPENDED = "suspended"
+    CLOSED = "closed"
+
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
     model_id: str = Field("dtmi:digitaltwins:isa95:MonopileStateTransition;1", const=True)
@@ -114,7 +127,7 @@ class MonopileTransportSchedule(WorkSchedule):
     work_type: WorkTypeEnum
     start_time: str
     end_time: str
-    schedule_state: str
+    schedule_state: WorkScheduleStateEnum
 
 
 class Vessel(Equipment):
