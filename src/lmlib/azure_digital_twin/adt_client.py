@@ -1,7 +1,7 @@
 from azure.identity import DefaultAzureCredential
 from azure.digitaltwins.core import DigitalTwinsClient
 from typing import Optional
-from utils import singleton
+from lmlib.utils import singleton
 
 
 @singleton
