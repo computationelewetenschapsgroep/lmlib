@@ -18,7 +18,7 @@ class VesselBase(BaseModel):
 
 
 # Common base class for ETA estimates
-class ETAEstimates(BaseModel):
+class VesselETAEstimates(BaseModel):
     path: str
     sog: List[float]
 
@@ -31,4 +31,13 @@ class VesselETARequest(BaseModel):
 # Response model for /v1/vessel/{vessel_id}/eta
 class VesselETAResponse(VesselBase, LocationBase):
     eta: datetime
-    estimates: ETAEstimates
+    estimates: VesselETAEstimates
+
+
+class MonopileETARequest(BaseModel):
+    monopile_id: str
+
+
+class MonopileETAResponse:
+    planned_eta: datetime   
+    estimated_eta: datetime
