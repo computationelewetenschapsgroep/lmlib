@@ -1,5 +1,4 @@
-from typing import List, Dict
-from pydantic import Field
+from typing import List, Literal, ClassVar
 from enum import Enum
 from lmlib.schemas.base_model import (
     EquipmentCapabilityProperty,
@@ -14,7 +13,6 @@ from lmlib.schemas.base_model import (
     WorkflowSpecificationNode, 
     WorkSchedule,
     EquipmentCapability,
-    EquipmentCapabilityProperty
 )
 # Enum for Vessel Type
 class VesselType(Enum):
@@ -81,53 +79,53 @@ class GrillageTypeEnum(Enum):
 
 class MonopileStateTransition(WorkflowSpecification):
     """A state transition of a monopile transport for offshore wind farm installation."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:MonopileStateTransition;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:MonopileStateTransition;1']] = 'dtmi:digitaltwins:isa95:MonopileStateTransition;1'
     dependency_type : DependencyTypeEnum
 
-class FabricationYard(StorageZone):
+class FabricationYard(SpatialDefinition, StorageZone):
     """A representation of fabrication yard where the monopiles are stored."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:FabricationYard;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:FabricationYard;1']] = 'dtmi:digitaltwins:isa95:FabricationYard;1'
     spatial_definition: SpatialDefinition
     id: str
     #monopiles: List["Monopile"]
 
 class Deck(PhysicalAsset):
     """A representation of deck of a vessel."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:Deck;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:Deck;1']] = 'dtmi:digitaltwins:isa95:Deck;1'
     spatial_definition: SpatialDefinition
 
 
 class MonopileTransport(WorkflowSpecification):
     """A representation of a monopile transport for offshore wind farm installation."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:MonopileTransport;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:MonopileTransport;1']] = 'dtmi:digitaltwins:isa95:MonopileTransport;1'
 
 class DeckPosition(OperationalLocation):
     """A position on the deck of a vessel."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:DeckPosition;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:DeckPosition;1']] = 'dtmi:digitaltwins:isa95:DeckPosition;1'
     position_type: VesselDeckPositionType
     spatial_definition: SpatialDefinition
 
 
 class Port(Area, SpatialDefinition):
     """A representation of a port where vessels are docked."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:Port;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:Port;1']] = 'dtmi:digitaltwins:isa95:Port;1'
     spatial_definition: SpatialDefinition
 
 class OffshoreWindFarm(Area, SpatialDefinition):
     """A representation for offshore wind farm installation."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:OffshoreWindFarm;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:OffshoreWindFarm;1']] = 'dtmi:digitaltwins:isa95:OffshoreWindFarm;1'
     spatial_definition: SpatialDefinition
     monopiles: List["Monopile"]
 
 class Monopile(Equipment):
     """A representation of a monopile for offshore wind farm installation"""
-    model_id: str = Field("dtmi:digitaltwins:isa95:Monopile;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:Monopile;1']] = 'dtmi:digitaltwins:isa95:Monopile;1'
     name: str
     document_number: str
     revision: int
     phase: str
-    top_m_p_flange: float
-    bottom_m_p_flange: float
+    top_mp_flange: float
+    bottom_mp_flange: float
     id: str
     sub_name: str
     dwg_date: str
@@ -137,14 +135,14 @@ class Monopile(Equipment):
     glauconite: str
     punch_through: str
     design_weight_given: float
-    centre_of_gravity_bottomof_m_p: float
-    seabed_level_relativeto_water_depth: float
+    centre_of_gravity_bottom_of_mp: float
+    seabed_level_relative_to_water_depth: float
     spatial_definition: SpatialDefinition
     equipment_level: str = "unit"
 
 class MonopileTransportSchedule(WorkSchedule):
     """A representation of monopile transport schedule for offshore wind farm installation."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:MonopileTransportSchedule;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:MonopileTransportSchedule;1']] = 'dtmi:digitaltwins:isa95:MonopileTransportSchedule;1'
     monopile: Monopile
     work_type: WorkTypeEnum
     start_time: str
@@ -154,7 +152,7 @@ class MonopileTransportSchedule(WorkSchedule):
 
 class Vessel(Equipment):
     """A representation for vessel."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:Vessel;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:Vessel;1']] = 'dtmi:digitaltwins:isa95:Vessel;1'
     ID : str
     vessel_type: VesselType
     day_rate: float
@@ -168,15 +166,19 @@ class Vessel(Equipment):
  
 class MonopileState(WorkflowSpecificationNode):
     """A state of a monopile transport for offshore wind farm installation."""
-    model_id: str = Field("dtmi:digitaltwins:isa95:MonopileState;1", Literal=True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:MonopileState;1']] = 'dtmi:digitaltwins:isa95:MonopileState;1'
     vessel: Vessel
     fabrication_yard: FabricationYard
     monopile_transport_schedule: MonopileTransportSchedule
 
 class GrillageType(EquipmentCapabilityProperty):
-    model_id: str = Field("dtmi:digitaltwins:isa95:GrillageType;1", Literal = True)
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:GrillageType;1']] = 'dtmi:digitaltwins:isa95:GrillageType;1'
     id: str
     grillage_type:GrillageTypeEnum
+
+class GrillageCompatibility(ParameterSpecification):
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:GrillageCompatibility;1']] = 'dtmi:digitaltwins:isa95:GrillageCompatibility;1'
+
 
 class VesselCapability(EquipmentCapability):
     pass
