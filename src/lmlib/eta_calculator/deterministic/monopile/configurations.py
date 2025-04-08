@@ -1,8 +1,8 @@
-from lmlib.schemas.operational_specification import ParameterSpecification, GrillageCompatibility
+from lmlib.schemas.model import ParameterSpecification, GrillageCompatibility
 from functools import partial
 from itertools import product
 import re
-from typing import List
+from typing import List, Type
 from lmlib.schemas.model import Decklength, Monopile
 from lmlib.schemas.model import FabricationYard, GrillageType
 
@@ -21,12 +21,19 @@ def camel_case_to_snake_case(input: str, lower = True):
 class Operand:
     def __init__(self, 
                 adt_service, 
-                target_type,
+                target_type: Type[ParameterSpecification],
                 target_property, 
                 source_id,
                 relation):
+
+        if not issubclass(target_type, ParameterSpecification):
+            raise TypeError("Target type must be a subclass of ParameterSpecification")
+
+        if target_property not in target_type.model_fields:
+            raise ValueError(f"Property '{target_property}' is not defined in target type '{target_type.__name__}'")
+    
         query = "SELECT target "
-        query += f"FROM digitaltwins source JOIN target RELATED "
+        query += "FROM digitaltwins source JOIN target RELATED "
         query += f"source.{relation} "
         query += f"where source.$dtId='{source_id}' "
         result = adt_service.query_digital_twins(query)
@@ -42,7 +49,7 @@ class Operand:
                        input["id"] =  elem["target"][key]
                        continue
                 prop = camel_case_to_snake_case(key)
-                if prop in target_type.schema()['properties'].keys():
+                if prop in target_type.model_json_schema()['properties'].keys():
                     input[prop] = elem["target"][key]
               
             self.nodes.append(target_type(**input))

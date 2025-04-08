@@ -1,4 +1,3 @@
-# test_azure_digital_twin_client.py
 import pytest
 from lmlib.azure_digital_twin.adt_client import AzureDigitalTwinClient
 from azure.identity import DefaultAzureCredential
