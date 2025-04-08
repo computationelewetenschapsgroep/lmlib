@@ -2,7 +2,7 @@ from lmlib.schemas.model import ParameterSpecification, GrillageCompatibility
 from functools import partial
 from itertools import product
 import re
-from typing import List, Type
+from typing import List
 from lmlib.schemas.model import Decklength, Monopile
 from lmlib.schemas.model import FabricationYard, GrillageType
 
@@ -21,13 +21,10 @@ def camel_case_to_snake_case(input: str, lower = True):
 class Operand:
     def __init__(self, 
                 adt_service, 
-                target_type: Type[ParameterSpecification],
+                target_type,
                 target_property, 
                 source_id,
                 relation):
-
-        if not issubclass(target_type, ParameterSpecification):
-            raise TypeError("Target type must be a subclass of ParameterSpecification")
 
         if target_property not in target_type.model_fields:
             raise ValueError(f"Property '{target_property}' is not defined in target type '{target_type.__name__}'")
@@ -73,7 +70,7 @@ class LengthConfigurations:
         
     def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
         
-        query = f"select * from digitaltwins where is_of_model('{ParameterSpecification.model_fields['model_id'].default}')"
+        query = f"select * from digitaltwins where is_of_model('{ParameterSpecification.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
         length_spec = [ParameterSpecification(value= elem["value"], value_unit_of_measure = elem["valueUnitOfMeasure"]) for elem in constraint_nodes if elem['$dtId'] == twin_id]
@@ -85,7 +82,7 @@ class LengthConfigurations:
             assert(configuration.value_unit_of_measure  == "percentage")
             compatibility_checker  = partial(self.is_compatible,
                                               scale_factor=1 + float(configuration.value) * 0.01,
-                                              property_lop = camel_case_to_snake_case(l_property),
+                                              property_lop = l_property,
                                               property_rop =  camel_case_to_snake_case(r_property))
            
             lop = Operand(adt_service, l_type, l_property, twin_id, "of")
@@ -116,7 +113,7 @@ class GrillageConfigurations:
         
     def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
         
-        query = f"select * from digitaltwins where is_of_model('{GrillageCompatibility.model_fields['model_id'].default}')"
+        query = f"select * from digitaltwins where is_of_model('{GrillageCompatibility.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
         grillage_spec = [GrillageCompatibility(value= "", 
@@ -139,7 +136,13 @@ class GrillageConfigurations:
           
 
             valid_vessels = list(filter(lambda x: x.grillage_type.value == configuration.grillage_type.value , rnodes))
-            
+
+            # valid_vessels = [
+            #     vessel 
+            #     for vessel in rnodes 
+            #     if vessel.grillage_type.value == configuration.grillage_type.value
+            # ]
+
             if lnodes:
                 fab_yard = lnodes[0].id
                 mlop = Operand(adt_service, Monopile, "", fab_yard, "fabricates")
