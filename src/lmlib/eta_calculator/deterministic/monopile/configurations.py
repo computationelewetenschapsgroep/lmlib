@@ -8,14 +8,18 @@ from lmlib.schemas.model import FabricationYard, GrillageType
 
 
 def camel_case_to_snake_case(input: str, lower = True):
-        target = ""
-        for c in input:
-           if c.islower():
-               target += c
-           else:
-               target += "_"
-               target += c.lower()
-        return target                
+    if "_" in input and input.islower():
+        return input
+    
+    target = ""
+    for i, c in enumerate(input):
+        if c.islower():
+            target += c
+        else:
+            if i > 0:
+                target += "_"
+            target += c.lower() if lower else c
+    return target                
 
 
 class Operand:
@@ -33,6 +37,7 @@ class Operand:
         query += "FROM digitaltwins source JOIN target RELATED "
         query += f"source.{relation} "
         query += f"where source.$dtId='{source_id}' "
+        print(f"query - {query}")
         result = adt_service.query_digital_twins(query)
 
      
@@ -48,7 +53,7 @@ class Operand:
                 prop = camel_case_to_snake_case(key)
                 if prop in target_type.model_json_schema()['properties'].keys():
                     input[prop] = elem["target"][key]
-              
+            print(input)
             self.nodes.append(target_type(**input))
 
     
@@ -76,13 +81,13 @@ class LengthConfigurations:
         length_spec = [ParameterSpecification(value= elem["value"], value_unit_of_measure = elem["valueUnitOfMeasure"]) for elem in constraint_nodes if elem['$dtId'] == twin_id]
         
         self.configurations = []
-         
+
         if length_spec:
             configuration: ParameterSpecification = length_spec[0]
             assert(configuration.value_unit_of_measure  == "percentage")
             compatibility_checker  = partial(self.is_compatible,
                                               scale_factor=1 + float(configuration.value) * 0.01,
-                                              property_lop = l_property,
+                                              property_lop = camel_case_to_snake_case(l_property),
                                               property_rop =  camel_case_to_snake_case(r_property))
            
             lop = Operand(adt_service, l_type, l_property, twin_id, "of")

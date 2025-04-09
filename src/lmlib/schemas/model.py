@@ -82,7 +82,7 @@ class MonopileStateTransition(WorkflowSpecification):
     model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:MonopileStateTransition;1']] = 'dtmi:digitaltwins:isa95:MonopileStateTransition;1'
     dependency_type : DependencyTypeEnum
 
-class FabricationYard(SpatialDefinition, StorageZone):
+class FabricationYard(StorageZone):
     """A representation of fabrication yard where the monopiles are stored."""
     model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:FabricationYard;1']] = 'dtmi:digitaltwins:isa95:FabricationYard;1'
     spatial_definition: SpatialDefinition
@@ -106,7 +106,7 @@ class DeckPosition(OperationalLocation):
     spatial_definition: SpatialDefinition
 
 
-class Port(Area, SpatialDefinition):
+class Port(Area):
     """A representation of a port where vessels are docked."""
     model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:Port;1']] = 'dtmi:digitaltwins:isa95:Port;1'
     spatial_definition: SpatialDefinition
