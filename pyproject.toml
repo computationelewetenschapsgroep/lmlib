@@ -21,6 +21,7 @@ dependencies = [
     'pytest-cov',
     'azure-digitaltwins-core>=1.2',
     'azure-identity>=1.19',
+    'sqlglot'
 ]
 classifiers = [
     "Programming Language :: Python :: 3.10",
