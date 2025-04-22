@@ -5,8 +5,7 @@ Follow these steps to use `lmlib` locally:
 ### 1. Clone the Repository
 
 
-1. `https://github.com/computationelewetenschapsgroep/lmlib.git`
-2. `cd lmlib` 
+1. `cd lmlib` 
 
 ### 2. Set Up a Virtual Environment
 

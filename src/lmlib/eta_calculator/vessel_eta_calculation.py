@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from schemas.eta_calculation import VesselETAResponse
+from schemas.eta_calculation import VesselETAResponse, VesselETARequest
 
 class VesselETACalculationService(ABC):
 

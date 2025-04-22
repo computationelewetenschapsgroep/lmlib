@@ -8,7 +8,7 @@ name = "lmlib"
 version = "0.0.1"
 description = "Logistics Management Library for Maritime Industry"
 authors = [
-    {name = "computationelewetenschapsgroep", email = "aryant@computationelewetenschapsgroep.com"},
+    {name = "Aniket Mitra", email = "aniket@lionsville.nl"},
 ]
 dependencies = [
     "requests",
