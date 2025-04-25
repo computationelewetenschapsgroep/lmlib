@@ -7,19 +7,27 @@ from lmlib.schemas.model import Decklength, Monopile
 from lmlib.schemas.model import FabricationYard, GrillageType
 
 
-def camel_case_to_snake_case(input: str, lower = True):
-    if "_" in input and input.islower():
-        return input
-    
-    target = ""
-    for i, c in enumerate(input):
-        if c.islower():
-            target += c
-        else:
-            if i > 0:
-                target += "_"
-            target += c.lower() if lower else c
-    return target                
+def separate_connectors(text, connectors= ["of", "to"]):
+    for conn in connectors:
+        # find words ending with the connector and not already separated
+        pattern = re.compile(rf'(\w+){conn}_(\w+)')
+        text = pattern.sub(rf'\1_{conn}_\2', text)
+    return text
+
+def join_single_chars(input_str):
+    return re.sub(r'_([a-zA-Z])_([a-zA-Z])(?=(_|$))', r'_\1\2', input_str)
+
+def replace_double_underscore(input_string):
+    return re.sub(r'__', '_', input_string)
+
+def camel_case_to_snake_case(input: str, lower=True):
+    if "_" in input and input.islower(): # O(n)
+        return input # O(1)
+    result = re.sub(r'(?<!^)(?=[A-Z])', '_', input) # O(n)
+    target = result.lower() if lower else result # O(n)
+    target_with_joined_single_chars = join_single_chars(target)   # O(n) 
+    target_with_separate_connectors = separate_connectors(target_with_joined_single_chars) # O(k * n) ; k = num of connectors
+    return replace_double_underscore(target_with_separate_connectors) #O(n)
 
 
 class Operand:
@@ -30,14 +38,14 @@ class Operand:
                 source_id,
                 relation):
 
-        if target_property not in target_type.model_fields:
-            raise ValueError(f"Property '{target_property}' is not defined in target type '{target_type.__name__}'")
+        # if target_property not in target_type.model_fields:
+        #     raise ValueError(f"Property '{target_property}' is not defined in target type '{target_type.__name__}'")
     
         query = "SELECT target "
         query += "FROM digitaltwins source JOIN target RELATED "
         query += f"source.{relation} "
         query += f"where source.$dtId='{source_id}' "
-        print(f"query - {query}")
+        print(f"Operand : query - {query}")
         result = adt_service.query_digital_twins(query)
 
      
@@ -53,7 +61,7 @@ class Operand:
                 prop = camel_case_to_snake_case(key)
                 if prop in target_type.model_json_schema()['properties'].keys():
                     input[prop] = elem["target"][key]
-            print(input)
+            print(f"Query results after cleaning - {input}")
             self.nodes.append(target_type(**input))
 
     
