@@ -28,7 +28,7 @@ def is_model_defined_with_model_id(
     model = getattr(module, model_name, None)
     
     if model:
-        if hasattr(model, 'model_fields') and 'model_id' in model.model_fields:
+        if hasattr(model, 'model_id'):
             if check_subclass_of_basemodel and not issubclass(model, BaseModel):
                 return False
             return True
