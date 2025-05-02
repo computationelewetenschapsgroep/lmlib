@@ -1,8 +1,8 @@
-from lmlib.schemas.model import ParameterSpecification, GrillageCompatibility
+from lmlib.schemas.operational_specification import ParameterSpecification, GrillageCompatibility
 from functools import partial
 from itertools import product
 import re
-from typing import List
+from typing import List, Optional
 from lmlib.schemas.model import Decklength, Monopile
 from lmlib.schemas.model import FabricationYard, GrillageType
 
@@ -47,7 +47,7 @@ class Operand:
         query += f"where source.$dtId='{source_id}' "
         print(f"Operand : query - {query}")
         result = adt_service.query_digital_twins(query)
-
+        print(f"Operand : query result - {result}")
      
         self.nodes = []
         for elem in result:
@@ -81,14 +81,18 @@ class LengthConfigurations:
 
 
         
-    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
-        
+    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property, is_active: Optional[bool] = None):
+        self.configurations = []
+        if is_active is None:
+            is_active = ParameterSpecification.model_fields['is_active'].default
+        if not is_active:
+            self.configurations = []
+            return
+
         query = f"select * from digitaltwins where is_of_model('{ParameterSpecification.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
         length_spec = [ParameterSpecification(value= elem["value"], value_unit_of_measure = elem["valueUnitOfMeasure"]) for elem in constraint_nodes if elem['$dtId'] == twin_id]
-        
-        self.configurations = []
 
         if length_spec:
             configuration: ParameterSpecification = length_spec[0]
@@ -124,8 +128,14 @@ class GrillageConfigurations:
 
 
         
-    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
-        
+    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property, is_active: Optional[bool] = None):
+        self.configurations = []
+        if is_active is None:
+            is_active = GrillageCompatibility.model_fields['is_active'].default
+        if not is_active:
+            self.configurations = []
+            return
+
         query = f"select * from digitaltwins where is_of_model('{GrillageCompatibility.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
@@ -134,7 +144,6 @@ class GrillageConfigurations:
                                                  grillage_type= elem["grillageType"]) \
                                                 for elem in constraint_nodes if elem['$dtId'] == twin_id]
         
-        self.configurations = []
          
         if grillage_spec:
             configuration: GrillageCompatibility = grillage_spec[0]

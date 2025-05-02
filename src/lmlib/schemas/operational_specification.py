@@ -28,14 +28,15 @@ class OperationsSegment(OperationsDefinition):
 
 
 class ParameterSpecification(BaseModel):
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:ParameterSpecification;1']] = 'dtmi:digitaltwins:isa95:ParameterSpecification;1'
     value: str
     value_unit_of_measure: str
-    model_id: str =  Field("dtmi:digitaltwins:isa95:ParameterSpecification;1", Literal=True)
-
+    is_active: bool = False
 
 class GrillageCompatibility(ParameterSpecification):
+    model_id: ClassVar[Literal['dtmi:digitaltwins:isa95:GrillageCompatibility;1']] = 'dtmi:digitaltwins:isa95:GrillageCompatibility;1'
     grillage_type: GrillageType
-    model_id: str =  Field("dtmi:digitaltwins:isa95:GrillageCompatibility;1", Literal=True)
+    is_active: bool = False
 
 
 
