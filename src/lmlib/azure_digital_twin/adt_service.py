@@ -1,13 +1,20 @@
 import uuid
 from typing import Optional
+import json
 from azure.identity import DefaultAzureCredential
-from lmlib.azure_digital_twin.adt_client import AzureDigitalTwinClient
+from lmlib.azure_digital_twin.adt_client import AzureDigitalTwinClient,  AzureDigitalTwinMockClient
 
 
+    
 class AzureDigitalTwinsService:
-    def __init__(self, adt_endpoint: str, credential: Optional[DefaultAzureCredential] = None):
-        self.client_manager = AzureDigitalTwinClient(adt_endpoint=adt_endpoint,credential=credential)
-        self.client = self.client_manager.client
+    def __init__(self, adt_endpoint: Optional[str] = None, 
+                 credential: Optional[DefaultAzureCredential] = None, 
+                 twin_graph_path = None):
+        if adt_endpoint:
+            self.client_manager = AzureDigitalTwinClient(adt_endpoint=adt_endpoint,credential=credential)
+            self.client = self.client_manager.client
+        else:
+            self.client = AzureDigitalTwinMockClient(twin_graph_path)
 
     def list_models(self):
         """ List all models in the Azure Digital Twins instance. """

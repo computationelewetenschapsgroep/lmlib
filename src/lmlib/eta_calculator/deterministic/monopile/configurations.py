@@ -2,20 +2,32 @@ from lmlib.schemas.operational_specification import ParameterSpecification, Gril
 from functools import partial
 from itertools import product
 import re
-from typing import List
+from typing import List, Optional
 from lmlib.schemas.model import Decklength, Monopile
 from lmlib.schemas.model import FabricationYard, GrillageType
 
 
-def camel_case_to_snake_case(input: str, lower = True):
-        target = ""
-        for c in input:
-           if c.islower():
-               target += c
-           else:
-               target += "_"
-               target += c.lower()
-        return target                
+def separate_connectors(text, connectors= ["of", "to"]):
+    for conn in connectors:
+        # find words ending with the connector and not already separated
+        pattern = re.compile(rf'(\w+){conn}_(\w+)')
+        text = pattern.sub(rf'\1_{conn}_\2', text)
+    return text
+
+def join_single_chars(input_str):
+    return re.sub(r'_([a-zA-Z])_([a-zA-Z])(?=(_|$))', r'_\1\2', input_str)
+
+def replace_double_underscore(input_string):
+    return re.sub(r'__', '_', input_string)
+
+def camel_case_to_snake_case(input: str, lower=True):
+    if "_" in input and input.islower(): # O(n)
+        return input # O(1)
+    result = re.sub(r'(?<!^)(?=[A-Z])', '_', input) # O(n)
+    target = result.lower() if lower else result # O(n)
+    target_with_joined_single_chars = join_single_chars(target)   # O(n) 
+    target_with_separate_connectors = separate_connectors(target_with_joined_single_chars) # O(k * n) ; k = num of connectors
+    return replace_double_underscore(target_with_separate_connectors) #O(n)
 
 
 class Operand:
@@ -25,12 +37,17 @@ class Operand:
                 target_property, 
                 source_id,
                 relation):
+
+        # if target_property not in target_type.model_fields:
+        #     raise ValueError(f"Property '{target_property}' is not defined in target type '{target_type.__name__}'")
+    
         query = "SELECT target "
-        query += f"FROM digitaltwins source JOIN target RELATED "
+        query += "FROM digitaltwins source JOIN target RELATED "
         query += f"source.{relation} "
         query += f"where source.$dtId='{source_id}' "
+        print(f"Operand : query - {query}")
         result = adt_service.query_digital_twins(query)
-
+        print(f"Operand : query result - {result}")
      
         self.nodes = []
         for elem in result:
@@ -42,9 +59,9 @@ class Operand:
                        input["id"] =  elem["target"][key]
                        continue
                 prop = camel_case_to_snake_case(key)
-                if prop in target_type.schema()['properties'].keys():
+                if prop in target_type.model_json_schema()['properties'].keys():
                     input[prop] = elem["target"][key]
-              
+            print(f"Query results after cleaning - {input}")
             self.nodes.append(target_type(**input))
 
     
@@ -64,15 +81,19 @@ class LengthConfigurations:
 
 
         
-    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
-        
-        query = f"select * from digitaltwins where is_of_model('{ParameterSpecification.model_fields['model_id'].default}')"
+    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property, is_active: Optional[bool] = None):
+        self.configurations = []
+        if is_active is None:
+            is_active = ParameterSpecification.model_fields['is_active'].default
+        if not is_active:
+            self.configurations = []
+            return
+
+        query = f"select * from digitaltwins where is_of_model('{ParameterSpecification.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
         length_spec = [ParameterSpecification(value= elem["value"], value_unit_of_measure = elem["valueUnitOfMeasure"]) for elem in constraint_nodes if elem['$dtId'] == twin_id]
-        
-        self.configurations = []
-         
+
         if length_spec:
             configuration: ParameterSpecification = length_spec[0]
             assert(configuration.value_unit_of_measure  == "percentage")
@@ -107,9 +128,15 @@ class GrillageConfigurations:
 
 
         
-    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property):
-        
-        query = f"select * from digitaltwins where is_of_model('{GrillageCompatibility.model_fields['model_id'].default}')"
+    def __init__(self, adt_service, twin_id, l_type , l_property, r_type, r_property, is_active: Optional[bool] = None):
+        self.configurations = []
+        if is_active is None:
+            is_active = GrillageCompatibility.model_fields['is_active'].default
+        if not is_active:
+            self.configurations = []
+            return
+
+        query = f"select * from digitaltwins where is_of_model('{GrillageCompatibility.model_id}')"
         constraint_nodes = adt_service.query_digital_twins(query)
         #print([elem for elem in constraint_nodes])
         grillage_spec = [GrillageCompatibility(value= "", 
@@ -117,7 +144,6 @@ class GrillageConfigurations:
                                                  grillage_type= elem["grillageType"]) \
                                                 for elem in constraint_nodes if elem['$dtId'] == twin_id]
         
-        self.configurations = []
          
         if grillage_spec:
             configuration: GrillageCompatibility = grillage_spec[0]
@@ -132,7 +158,13 @@ class GrillageConfigurations:
           
 
             valid_vessels = list(filter(lambda x: x.grillage_type.value == configuration.grillage_type.value , rnodes))
-            
+
+            # valid_vessels = [
+            #     vessel 
+            #     for vessel in rnodes 
+            #     if vessel.grillage_type.value == configuration.grillage_type.value
+            # ]
+
             if lnodes:
                 fab_yard = lnodes[0].id
                 mlop = Operand(adt_service, Monopile, "", fab_yard, "fabricates")

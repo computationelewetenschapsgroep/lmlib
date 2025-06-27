@@ -8,19 +8,18 @@ name = "lmlib"
 version = "0.0.1"
 description = "Logistics Management Library for Maritime Industry"
 authors = [
-    {name = "Aniket Mitra", email = "aniket@lionsville.nl"},
+    {name = "Aniket Mitra", email = "amitra@lionsville.nl"},
 ]
 dependencies = [
     "requests",
     'importlib-metadata; python_version<"3.10"',
-    'nextroute',
-    'nextmv',
     'pydantic>=2.10',
     'pytest',
     'pytest-mock',
     'pytest-cov',
     'azure-digitaltwins-core>=1.2',
     'azure-identity>=1.19',
+    'sqlglot'
 ]
 classifiers = [
     "Programming Language :: Python :: 3.10",
