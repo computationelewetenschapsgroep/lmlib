@@ -7,3 +7,5 @@ from .pddl_domain import PDDLDomain
 from .pddl_problem import PDDLProblem
 from .pddl_param import PDDLNumericValue
 from .pddl_predicate_def import PDDLPredicateDef
+from .pddl_literal import PDDLComment
+from .pddl_probabilistic_action import PDDLProbabilisticAction, ProbabilisticOutcome
