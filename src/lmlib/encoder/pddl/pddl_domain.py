@@ -6,7 +6,8 @@ from .type import Type
 from .pddl_predicate import PDDLPredicate
 from .pddl_action import PDDLAction
 from .pddl_literal import PDDLLiteral
-
+from .pddl_event import PDDLEvent
+from .pddl_process import PDDLProcess
 class PDDLDomain:
     def __init__(self):
         self.requirements: list[str] = [":typing", ":equality", ":action-costs"]
@@ -15,6 +16,8 @@ class PDDLDomain:
         self.predicates :  dict[str, PDDLPredicateDef] = {}
         self.functions :  dict[str, PDDLPredicateDef] = {}
         self.actions : list[PDDLAction] = []
+        self.events : list[PDDLEvent] = []
+        self.processes : list[PDDLProcess] = []
 
 
     def get_type(self, name) -> Type:
