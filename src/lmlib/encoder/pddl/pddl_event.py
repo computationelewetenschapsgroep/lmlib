@@ -20,6 +20,9 @@ class PDDLEvent:
     def add_effect(self, l: PDDLLiteral):
         self.effects.append(l)
 
+    def add_effects(self, l:  List[PDDLLiteral]):
+        self.effects += l    
+
 
     def add_parameters(self, p: list[PDDLParam]):
         self.parameters += p
