@@ -11,3 +11,4 @@ from .pddl_literal import PDDLComment
 from .pddl_probabilistic_action import PDDLProbabilisticAction, ProbabilisticOutcome
 from .pddl_process import PDDLProcess
 from .pddl_event import PDDLEvent
+from .pddl_literal import PDDLLiteral
