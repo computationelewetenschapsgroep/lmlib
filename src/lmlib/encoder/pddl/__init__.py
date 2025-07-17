@@ -12,3 +12,4 @@ from .pddl_probabilistic_action import PDDLProbabilisticAction, ProbabilisticOut
 from .pddl_process import PDDLProcess
 from .pddl_event import PDDLEvent
 from .pddl_literal import PDDLLiteral
+from .pddl_precondition import PDDLPrecondition
