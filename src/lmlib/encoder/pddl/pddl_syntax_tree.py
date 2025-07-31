@@ -19,12 +19,12 @@ class PDDLPreconditionSyntaxTree:
         self.current: PreconditionNode | None = None
         self.stack: list[PreconditionNode | None] = []
 
-    def add_operator(self, operator: str):
+    def add_operator(self, operator: str, variables: list[tuple[str, str]] = None):
         """
         Begin a logical or quantifier operator node. Supported operators: and, or, not, imply, forall, exists.
         Must be closed with end_operator().
         """
-        node = PreconditionNode(operator.lower())
+        node = PreconditionNode(operator.lower(), variables=variables or [])
         if self.root is None:
             self.root = node
         else:
