@@ -31,7 +31,8 @@ class PDDLEvent:
     # def add_precondition(self, l:  List[PDDLLiteral]):
         # self.preconditions += l
 
-
+    def __str__(self):
+        return f"PDDLEvent({self.name}, {self.parameters}, {self.precondition}, {self.effects})"
 
     def to_pddl(self) -> str:
         s = f"\t(:event {self.name}\n"

@@ -14,7 +14,7 @@ class PDDLPrecondition(PDDLLiteral):
             return f"(not {self.arguments[0].to_pddl()})"
         if self.operator in {"and", "or", "imply"}:
             return f"({self.operator} {' '.join(arg.to_pddl() for arg in self.arguments)})"
-        return f"({self.operator} {' '.join(self.arguments)})"
+        return f"({self.operator} {' '.join(arg.to_pddl() for arg in self.arguments)})"
 
     def __repr__(self):
         return f"PDDLPrecondition({self.operator}, {self.arguments}, {self.variables})"

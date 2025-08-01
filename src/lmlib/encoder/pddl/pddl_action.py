@@ -16,10 +16,10 @@ class PDDLAction:
         self.parameters.append(p)
         return p
 
-    def begin_preconditions(self, operator: str):
-        self.precondition_syntax_tree.add_operator(operator)
+    def begin_precondition(self, operator: str, variables: List[tuple[str, str]] = None):
+        self.precondition_syntax_tree.add_operator(operator, variables)
 
-    def end_preconditions(self):
+    def end_precondition(self):
         self.precondition_syntax_tree.end_operator()        
 
     def add_precondition(self, predicate_symbol: str, arguments: List[str], variables: List[tuple[str, str]] = None) -> None:
